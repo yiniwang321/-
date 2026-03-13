@@ -1,56 +1,37 @@
+# .github/workflows/pdf-builder.yml
 name: Generate PDF from HTML
 
+# 当代码推送到 main 分支时触发
 on:
   push:
-    branches: [ main ] # 当代码推送到 main 分支时触发
+    branches: [ main ]
 
 jobs:
-  build_pdf:
+  build:
     runs-on: ubuntu-latest
+
     steps:
+      # 1. 获取仓库代码
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2. 安装 Node.js 环境
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install Puppeteer
-        run: npm i puppeteer
+      # 3. 安装 Puppeteer 依赖
+      - name: Install dependencies
+        run: npm install puppeteer
 
-      - name: Generate PDF script
-        run: |
-          cat << 'EOF' > generate.js
-          const puppeteer = require('puppeteer');
-          const path = require('path');
+      # 4. 运行我们刚才写的脚本生成 PDF
+      - name: Generate PDF
+        run: node generate-pdf.js
 
-          (async () => {
-            const browser = await puppeteer.launch({ headless: "new" });
-            const page = await browser.newPage();
-            
-            // 获取本地 HTML 文件的绝对路径
-            const filePath = `file://${path.join(__dirname, 'index.html')}`;
-            
-            // waitUntil: 'networkidle0' 确保 Tailwind CSS 通过 CDN 加载并渲染完毕
-            await page.goto(filePath, { waitUntil: 'networkidle0' });
-            
-            // 生成 PDF：A4、竖向、打印背景色、无边距
-            await page.pdf({
-              path: 'qianshu-proposal.pdf',
-              format: 'A4',
-              portrait: true,
-              printBackground: true,
-              margin: { top: 0, right: 0, bottom: 0, left: 0 }
-            });
-            
-            await browser.close();
-          })();
-          EOF
-          node generate.js
-
-      - name: Upload PDF Artifact
+      # 5. 将生成的 PDF 作为 Artifact（产物）上传，供你下载
+      - name: Upload PDF
         uses: actions/upload-artifact@v3
         with:
-          name: Proposal-PDF
-          path: qianshu-proposal.pdf
+          name: Museum-Proposal-PDF
+          path: Proposal.pdf
