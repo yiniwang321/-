@@ -2,73 +2,55 @@ name: Generate PDF from HTML
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch:
+    branches: [ main ] # 当代码推送到 main 分支时触发
 
 jobs:
   build_pdf:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '18'
 
       - name: Install Puppeteer
-        run: npm install puppeteer
+        run: npm i puppeteer
 
-      - name: Run PDF Generation Script
+      - name: Generate PDF script
         run: |
           cat << 'EOF' > generate.js
           const puppeteer = require('puppeteer');
           const path = require('path');
 
           (async () => {
-            try {
-              console.log('Starting browser...');
-              const browser = await puppeteer.launch({ 
-                headless: "new",
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
-              });
-              const page = await browser.newPage();
-              
-              // 【魔法设置 1】：强制设置电脑端视口宽度，防止触发手机端拥挤排版，并提高清晰度
-              await page.setViewport({ width: 1120, height: 1448, deviceScaleFactor: 2 });
-              
-              const filePath = `file://${path.join(__dirname, 'index.html')}`;
-              console.log('Opening page:', filePath);
-              
-              await page.goto(filePath, { waitUntil: 'networkidle0', timeout: 60000 });
-              
-              console.log('Waiting for styles to render...');
-              await new Promise(r => setTimeout(r, 3000));
-              
-              console.log('Generating Portrait PDF...');
-              await page.pdf({
-                path: 'qianshu-proposal.pdf',
-                format: 'A4',
-                landscape: false, // 【关键修改】：改为 false，变成竖屏
-                printBackground: true,
-                scale: 0.8, // 【魔法设置 2】：整体缩小到 80%，让内容完美适应较窄的竖屏宽度
-                // 竖屏建议上下留出一点点白边（10mm），看起来更像正式的商业文档，左右保持无边距
-                margin: { top: '10mm', right: '0', bottom: '10mm', left: '0' } 
-              });
-              
-              await browser.close();
-              console.log('PDF generated successfully!');
-            } catch (error) {
-              console.error('❌ Error generating PDF:', error);
-              process.exit(1);
-            }
+            const browser = await puppeteer.launch({ headless: "new" });
+            const page = await browser.newPage();
+            
+            // 获取本地 HTML 文件的绝对路径
+            const filePath = `file://${path.join(__dirname, 'index.html')}`;
+            
+            // waitUntil: 'networkidle0' 确保 Tailwind CSS 通过 CDN 加载并渲染完毕
+            await page.goto(filePath, { waitUntil: 'networkidle0' });
+            
+            // 生成 PDF：A4、竖向、打印背景色、无边距
+            await page.pdf({
+              path: 'qianshu-proposal.pdf',
+              format: 'A4',
+              portrait: true,
+              printBackground: true,
+              margin: { top: 0, right: 0, bottom: 0, left: 0 }
+            });
+            
+            await browser.close();
           })();
           EOF
           node generate.js
 
       - name: Upload PDF Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: Proposal-PDF
           path: qianshu-proposal.pdf
