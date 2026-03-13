@@ -2,8 +2,8 @@ name: Generate PDF from HTML
 
 on:
   push:
-    branches: [ main, master ] # 当代码推送到主分支时自动触发
-  workflow_dispatch: # 允许你在网页上手动点击按钮触发
+    branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build_pdf:
@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Puppeteer (无头浏览器)
+      - name: Install Puppeteer
         run: npm install puppeteer
 
       - name: Run PDF Generation Script
@@ -27,38 +27,52 @@ jobs:
           const path = require('path');
 
           (async () => {
-            // 启动虚拟浏览器
-            const browser = await puppeteer.launch({ headless: "new" });
-            const page = await browser.newPage();
-            
-            // 获取 HTML 文件的本地路径
-            const filePath = `file://${path.join(__dirname, 'index.html')}`;
-            console.log('正在打开页面:', filePath);
-            
-            // 等待网络空闲，确保 Tailwind CSS 的 CDN 完全加载
-            await page.goto(filePath, { waitUntil: 'networkidle0', timeout: 60000 });
-            
-            // 额外等待 3 秒，确保所有字体和动态样式渲染完毕
-            console.log('等待样式渲染...');
-            await new Promise(r => setTimeout(r, 3000));
-            
-            // 导出 PDF（A4、横向、保留背景色、无边距）
-            console.log('正在生成 PDF...');
-            await page.pdf({
-              path: 'qianshu-proposal.pdf',
-              format: 'A4',
-              landscape: true,
-              printBackground: true,
-              margin: { top: 0, right: 0, bottom: 0, left: 0 }
-            });
-            
-            await browser.close();
-            console.log('PDF 生成成功！');
+            try {
+              console.log('Starting browser...');
+              const browser = await puppeteer.launch({ 
+                headless: "new",
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+              });
+              const page = await browser.newPage();
+              
+              // 【修复 1】强制浏览器使用浅色模式 (Light Mode)，防止触发暗黑主题
+              await page.emulateMediaFeatures([
+                { name: 'prefers-color-scheme', value: 'light' }
+              ]);
+              
+              const filePath = `file://${path.join(__dirname, 'index.html')}`;
+              console.log('Opening page:', filePath);
+              
+              await page.goto(filePath, { waitUntil: 'networkidle0', timeout: 60000 });
+              
+              // 【修复 2】强制将网页 body 的背景色设置为纯白，防止透明背景在 PDF 中变成全黑
+              await page.evaluate(() => {
+                document.body.style.backgroundColor = '#ffffff';
+              });
+              
+              console.log('Waiting for styles to render...');
+              await new Promise(r => setTimeout(r, 3000));
+              
+              console.log('Generating PDF...');
+              await page.pdf({
+                path: 'qianshu-proposal.pdf',
+                format: 'A4',
+                landscape: true,
+                printBackground: true,
+                margin: { top: 0, right: 0, bottom: 0, left: 0 }
+              });
+              
+              await browser.close();
+              console.log('PDF generated successfully!');
+            } catch (error) {
+              console.error('❌ Error generating PDF:', error);
+              process.exit(1);
+            }
           })();
           EOF
           node generate.js
 
-      - name: Upload PDF Artifact (上传生成的 PDF)
+      - name: Upload PDF Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Proposal-PDF
