@@ -29,11 +29,10 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 3rem 8%;
+            padding: 4rem 10%;
             position: relative;
             page-break-after: always;
             border-bottom: 1px solid #333;
-            box-sizing: border-box;
         }
         
         .slide::before {
@@ -48,7 +47,6 @@
             pointer-events: none;
         }
 
-        /* 专门针对竖屏 A4 打印的优化 */
         @media print {
             body { background-color: var(--dark); }
             .no-print { display: none !important; }
@@ -56,37 +54,28 @@
                 height: 100vh; 
                 page-break-after: always;
                 border-bottom: none;
-                padding: 2rem 6%; /* 竖屏下减少左右边距 */
-                justify-content: flex-start; /* 竖屏内容从顶部开始排列更好看 */
-                padding-top: 4rem;
             }
-            .slide-center {
-                justify-content: center; /* 封面保持居中 */
-            }
-            @page { 
-                size: A4 portrait; /* 强制竖屏 */
-                margin: 0; 
-            }
-            /* 竖屏下强制部分网格变为单列以防拥挤 */
-            .print-col-1 { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+            @page { size: A4 landscape; margin: 0; }
         }
     </style>
 </head>
 <body>
 
     <!-- Slide 1: Cover -->
-    <div class="slide slide-center items-center text-center">
+    <div class="slide items-center text-center">
         <div class="w-24 h-1 bg-gold mb-8"></div>
         <h1 class="text-4xl md:text-5xl font-bold mb-4 tracking-widest">能量美学与高客单价转化</h1>
         <h2 class="text-xl md:text-2xl text-gray-400 mb-12 font-light tracking-wide">天安千树水晶博物馆 · 特邀专家入驻方案</h2>
         
-        <div class="mt-12 p-8 border border-gold border-opacity-30 rounded-lg bg-black bg-opacity-50 backdrop-blur-sm w-full max-w-2xl">
+        <div class="mt-12 p-8 border border-gold border-opacity-30 rounded-lg bg-black bg-opacity-50 backdrop-blur-sm">
             <p class="text-gold text-lg mb-2 font-playfair italic">Proposed by</p>
-            <p class="text-2xl font-bold tracking-widest mb-6">特邀能量美学顾问</p>
-            <div class="flex flex-col gap-3 text-sm text-gray-300 items-center">
-                <span class="px-4 py-2 border border-gray-600 rounded-full w-3/4">苏富比艺术学院 硕士</span>
-                <span class="px-4 py-2 border border-gray-600 rounded-full w-3/4">厦门大学金融学 学士</span>
-                <span class="px-4 py-2 border border-gray-600 rounded-full w-3/4">伦敦占星学院 / 纽约塔罗学院 / 开普勒占星学院 进修</span>
+            <p class="text-2xl font-bold tracking-widest mb-4">特邀能量美学顾问</p>
+            <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-300">
+                <span class="px-3 py-1 border border-gray-600 rounded-full">苏富比艺术学院 硕士</span>
+                <span class="px-3 py-1 border border-gray-600 rounded-full">厦门大学金融学 学士</span>
+                <span class="px-3 py-1 border border-gray-600 rounded-full">伦敦占星学院 进修</span>
+                <span class="px-3 py-1 border border-gray-600 rounded-full">纽约塔罗学院 进修</span>
+                <span class="px-3 py-1 border border-gray-600 rounded-full">开普勒占星学院 进修</span>
             </div>
         </div>
     </div>
@@ -94,7 +83,7 @@
     <!-- Slide 2: Executive Summary -->
     <div class="slide">
         <h2 class="text-gold text-3xl font-bold mb-8 border-b border-gold pb-4 inline-block">01. 核心商业主张</h2>
-        <div class="grid md:grid-cols-2 print-col-1 gap-8 items-start">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
             <div>
                 <h3 class="text-2xl font-semibold mb-4 text-white">打造“艺术鉴赏 + 灵性咨询 + 能量定制”的高端商业闭环</h3>
                 <p class="text-gray-300 leading-relaxed mb-6">
@@ -104,7 +93,7 @@
                     将传统的“水晶零售”升级为面向高净值人群的“高端能量美学定制服务”。利用顶尖的学术背景建立极强的信任背书，大幅提升贵重水晶（晶洞、高定珠宝）的成交率和客单价。
                 </p>
             </div>
-            <div class="border border-gray-700 p-6 rounded-lg bg-zinc-900">
+            <div class="border border-gray-700 p-8 rounded-lg bg-zinc-900">
                 <ul class="space-y-6">
                     <li class="flex items-start">
                         <span class="text-gold mr-4 text-xl">✦</span>
@@ -134,25 +123,25 @@
 
     <!-- Slide 3: Background -->
     <div class="slide">
-        <h2 class="text-gold text-3xl font-bold mb-8 border-b border-gold pb-4 inline-block">02. 无可复制的顶尖背景</h2>
-        <div class="grid md:grid-cols-3 print-col-1 gap-6">
-            <div class="bg-zinc-900 p-6 border-l-4 border-gold rounded-r-lg">
-                <h3 class="text-xl font-bold text-white mb-2">商业与财富的底层逻辑</h3>
-                <p class="text-gold text-sm mb-3 font-playfair italic">厦门大学 金融学士</p>
+        <h2 class="text-gold text-3xl font-bold mb-12 border-b border-gold pb-4 inline-block">02. 无可复制的顶尖背景</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-zinc-900 p-8 border-t-4 border-gold rounded-b-lg">
+                <h3 class="text-xl font-bold text-white mb-4">商业与财富的底层逻辑</h3>
+                <p class="text-gold text-sm mb-4 font-playfair italic">厦门大学 金融学士</p>
                 <p class="text-gray-400 text-sm leading-relaxed">
                     懂经济、懂周期、能与高净值客户及企业家同频对话。超越传统占星师，提供专业的“金融/事业占星”指导，精准击中高端客群的核心诉求。
                 </p>
             </div>
-            <div class="bg-zinc-900 p-6 border-l-4 border-gold rounded-r-lg">
-                <h3 class="text-xl font-bold text-white mb-2">极致的审美与高奢调性</h3>
-                <p class="text-gold text-sm mb-3 font-playfair italic">苏富比艺术学院 硕士</p>
+            <div class="bg-zinc-900 p-8 border-t-4 border-gold rounded-b-lg">
+                <h3 class="text-xl font-bold text-white mb-4">极致的审美与高奢调性</h3>
+                <p class="text-gold text-sm mb-4 font-playfair italic">苏富比艺术学院 硕士</p>
                 <p class="text-gray-400 text-sm leading-relaxed">
                     具备世界级的艺术品鉴赏力，能将高价水晶作为“艺术收藏品”进行价值重塑与推介，完美契合天安千树的高端商业定位。
                 </p>
             </div>
-            <div class="bg-zinc-900 p-6 border-l-4 border-gold rounded-r-lg">
-                <h3 class="text-xl font-bold text-white mb-2">全球权威的神秘学背书</h3>
-                <p class="text-gold text-sm mb-3 font-playfair italic">伦敦/纽约/开普勒 三大顶级学院</p>
+            <div class="bg-zinc-900 p-8 border-t-4 border-gold rounded-b-lg">
+                <h3 class="text-xl font-bold text-white mb-4">全球权威的神秘学背书</h3>
+                <p class="text-gold text-sm mb-4 font-playfair italic">伦敦/纽约/开普勒 三大顶级学院</p>
                 <p class="text-gray-400 text-sm leading-relaxed">
                     拒绝地摊式算命，提供具备严密逻辑与心理学支撑的国际化正统灵性咨询。用最专业的学术背景，为高价水晶的能量加持提供背书。
                 </p>
@@ -163,13 +152,13 @@
     <!-- Slide 4: Partnership Model -->
     <div class="slide">
         <h2 class="text-gold text-3xl font-bold mb-8 border-b border-gold pb-4 inline-block">03. 合作模式与共赢机制</h2>
-        <div class="bg-black bg-opacity-40 p-8 rounded-xl border border-gray-800">
-            <div class="text-center mb-8">
+        <div class="bg-black bg-opacity-40 p-10 rounded-xl border border-gray-800">
+            <div class="text-center mb-10">
                 <h3 class="text-2xl text-white font-bold mb-2">独立主理人模式 <span class="text-gold font-normal text-xl">（利益最大化）</span></h3>
                 <p class="text-gray-400">身份定位：非员工，而是入驻的“特邀专家”</p>
             </div>
             
-            <div class="grid md:grid-cols-2 print-col-1 gap-6">
+            <div class="grid md:grid-cols-2 gap-10">
                 <div class="bg-zinc-900 p-6 rounded-lg border border-gray-700">
                     <h4 class="text-gold font-bold mb-4 text-lg flex items-center">
                         <span class="text-2xl mr-2">1.</span> 占星/塔罗咨询费
@@ -193,51 +182,61 @@
         </div>
     </div>
 
-    <!-- Slide 5: Pricing Strategy & Menu -->
+    <!-- Slide 5: Pricing Strategy & Menu (NEWLY UPDATED) -->
     <div class="slide">
-        <h2 class="text-gold text-3xl font-bold mb-6 border-b border-gold pb-4 inline-block">04. 漏斗式阶梯定价与服务菜单</h2>
+        <h2 class="text-gold text-3xl font-bold mb-8 border-b border-gold pb-4 inline-block">04. 漏斗式阶梯定价与服务菜单</h2>
         
-        <div class="space-y-6">
-            <p class="text-gray-400 text-sm mb-2">针对博物馆 50 元门票的客群特征，设计从“轻体验”到“高转化”的阶梯型产品线，维持专家 2000元/小时 的品牌调性，同时最大化水晶销售转化率。</p>
-            
-            <!-- Tier 1 -->
-            <div class="bg-zinc-900 p-4 rounded-lg border-l-4 border-gray-500">
-                <div class="flex justify-between items-start mb-1">
-                    <h4 class="text-white font-bold text-lg">【能量初探】塔罗潜意识洞见 <span class="text-gray-500 text-sm font-normal ml-2">15 mins</span></h4>
-                    <span class="text-gold font-bold text-xl">￥298</span>
+        <div class="grid md:grid-cols-12 gap-8">
+            <!-- Menu -->
+            <div class="md:col-span-7 space-y-4">
+                <p class="text-gray-400 text-sm mb-4">针对博物馆 50 元门票的客群特征，设计从“轻体验”到“高转化”的阶梯型产品线，维持专家 2000元/小时 的品牌调性，同时最大化水晶销售转化率。</p>
+                
+                <!-- Tier 1 -->
+                <div class="bg-zinc-900 p-5 rounded-lg border-l-4 border-gray-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="text-white font-bold text-lg">【能量初探】塔罗潜意识洞见 <span class="text-gray-500 text-sm font-normal ml-2">15 mins</span></h4>
+                        <span class="text-gold font-bold text-xl">￥298</span>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-2">单项问题快问快答。快速展现专业度，筛选具备高消费潜力的客户。</p>
+                    <div class="inline-block bg-gray-800 text-xs text-gray-300 px-2 py-1 rounded">💡 门票联动：凭 50 元博物馆门票，可直接抵扣 50 元咨询费。</div>
                 </div>
-                <p class="text-sm text-gray-400 mb-2">单项问题快问快答。快速展现专业度，筛选具备高消费潜力的客户。</p>
-                <div class="inline-block bg-gray-800 text-xs text-gray-300 px-2 py-1 rounded">💡 门票联动：凭 50 元博物馆门票，可直接抵扣 50 元咨询费。</div>
+
+                <!-- Tier 2 -->
+                <div class="bg-zinc-900 p-5 rounded-lg border-l-4 border-yellow-600">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="text-white font-bold text-lg">【深度解码】个人星盘与财富格局 <span class="text-gray-500 text-sm font-normal ml-2">30 mins</span></h4>
+                        <span class="text-gold font-bold text-xl">￥980</span>
+                    </div>
+                    <p class="text-sm text-gray-400">结合金融背景深度解析事业与财运，挖掘客户痛点，顺理成章开具“能量处方”（推荐中高价位水晶）。</p>
+                </div>
+
+                <!-- Tier 3 -->
+                <div class="bg-zinc-900 p-5 rounded-lg border-l-4 border-gold relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-gold text-black text-xs font-bold px-2 py-1 rounded-bl-lg">主推转化款</div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="text-white font-bold text-lg">【高定专属】全案星盘与水晶寻光之旅 <span class="text-gray-500 text-sm font-normal ml-2">60 mins</span></h4>
+                        <span class="text-gold font-bold text-xl">￥1980</span>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-3">全方位命理咨询 + 亲自带领客户在展厅内挑选、讲解、匹配专属高价水晶（结合苏富比鉴赏体系）。</p>
+                    <div class="inline-block bg-yellow-900 bg-opacity-40 border border-gold text-xs text-gold px-3 py-1.5 rounded font-bold">
+                        🔥 杀手锏机制：当日购买水晶满 10,000 元，本次 1980 元咨询费全额抵扣！
+                    </div>
+                </div>
             </div>
 
-            <!-- Tier 2 -->
-            <div class="bg-zinc-900 p-4 rounded-lg border-l-4 border-yellow-600">
-                <div class="flex justify-between items-start mb-1">
-                    <h4 class="text-white font-bold text-lg">【深度解码】个人星盘与财富格局 <span class="text-gray-500 text-sm font-normal ml-2">30 mins</span></h4>
-                    <span class="text-gold font-bold text-xl">￥980</span>
-                </div>
-                <p class="text-sm text-gray-400">结合金融背景深度解析事业与财运，挖掘客户痛点，顺理成章开具“能量处方”（推荐中高价位水晶）。</p>
-            </div>
-
-            <!-- Tier 3 -->
-            <div class="bg-zinc-900 p-4 rounded-lg border-l-4 border-gold relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-gold text-black text-xs font-bold px-2 py-1 rounded-bl-lg">主推转化款</div>
-                <div class="flex justify-between items-start mb-1">
-                    <h4 class="text-white font-bold text-lg">【高定专属】全案星盘与寻光之旅 <span class="text-gray-500 text-sm font-normal ml-2">60 mins</span></h4>
-                    <span class="text-gold font-bold text-xl">￥1980</span>
-                </div>
-                <p class="text-sm text-gray-400 mb-2">全方位命理咨询 + 亲自带领客户在展厅内挑选、讲解、匹配专属高价水晶。</p>
-                <div class="inline-block bg-yellow-900 bg-opacity-40 border border-gold text-xs text-gold px-3 py-1.5 rounded font-bold">
-                    🔥 杀手锏机制：当日购买水晶满 10,000 元，本次 1980 元咨询费全额抵扣！
-                </div>
-            </div>
-            
             <!-- Call to Action -->
-            <div class="bg-black border border-gray-800 p-4 rounded-lg mt-4">
-                <h3 class="text-lg font-bold text-white mb-2">提议：试运行方案</h3>
-                <p class="text-gray-300 text-sm leading-relaxed">
-                    建议开展为期 1 个月的试运行合作。联合举办一场<strong class="text-gold">“2026星象趋势与个人能量水晶定制”</strong> VIP 下午茶沙龙。博物馆负责邀约 5-10 位高潜力老客户，我负责现场解析与水晶匹配，验证高客单价转化模型。
+            <div class="md:col-span-5 bg-black border border-gray-800 p-6 rounded-lg flex flex-col">
+                <h3 class="text-xl font-bold text-white mb-4 border-b border-gray-700 pb-2">提议：试运行方案</h3>
+                <p class="text-gray-300 mb-4 text-sm leading-relaxed">
+                    建议开展为期 1 个月的试运行合作。联合举办一场<strong class="text-gold">“2026星象趋势与个人能量水晶定制”</strong> VIP 下午茶沙龙。
                 </p>
+                <p class="text-gray-300 mb-6 text-sm leading-relaxed">
+                    博物馆负责邀约 5-10 位高潜力老客户，我负责现场解析与水晶匹配。通过首场沙龙的实际转化数据，验证该合作模式的巨大商业潜力。
+                </p>
+                <div class="mt-auto p-4 bg-zinc-900 rounded text-center">
+                    <p class="text-sm text-gray-400 mb-1">通过“高定专属”套餐的免单机制</p>
+                    <p class="text-gold font-bold">将咨询客户100%转化为高客单价买家</p>
+                </div>
             </div>
         </div>
     </div>
