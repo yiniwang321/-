@@ -35,31 +35,26 @@ jobs:
               });
               const page = await browser.newPage();
               
-              // 【修复 1】强制浏览器使用浅色模式 (Light Mode)，防止触发暗黑主题
-              await page.emulateMediaFeatures([
-                { name: 'prefers-color-scheme', value: 'light' }
-              ]);
+              // 【魔法设置 1】：强制设置电脑端视口宽度，防止触发手机端拥挤排版，并提高清晰度
+              await page.setViewport({ width: 1120, height: 1448, deviceScaleFactor: 2 });
               
               const filePath = `file://${path.join(__dirname, 'index.html')}`;
               console.log('Opening page:', filePath);
               
               await page.goto(filePath, { waitUntil: 'networkidle0', timeout: 60000 });
               
-              // 【修复 2】强制将网页 body 的背景色设置为纯白，防止透明背景在 PDF 中变成全黑
-              await page.evaluate(() => {
-                document.body.style.backgroundColor = '#ffffff';
-              });
-              
               console.log('Waiting for styles to render...');
               await new Promise(r => setTimeout(r, 3000));
               
-              console.log('Generating PDF...');
+              console.log('Generating Portrait PDF...');
               await page.pdf({
                 path: 'qianshu-proposal.pdf',
                 format: 'A4',
-                landscape: true,
+                landscape: false, // 【关键修改】：改为 false，变成竖屏
                 printBackground: true,
-                margin: { top: 0, right: 0, bottom: 0, left: 0 }
+                scale: 0.8, // 【魔法设置 2】：整体缩小到 80%，让内容完美适应较窄的竖屏宽度
+                // 竖屏建议上下留出一点点白边（10mm），看起来更像正式的商业文档，左右保持无边距
+                margin: { top: '10mm', right: '0', bottom: '10mm', left: '0' } 
               });
               
               await browser.close();
