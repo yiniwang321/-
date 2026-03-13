@@ -1,0 +1,65 @@
+name: Generate PDF from HTML
+
+on:
+  push:
+    branches: [ main, master ] # Trigger automatically when code is pushed to main branches
+  workflow_dispatch: # Allow manual trigger from the GitHub Actions UI
+
+jobs:
+  build_pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Puppeteer
+        run: npm install puppeteer
+
+      - name: Run PDF Generation Script
+        run: |
+          cat << 'EOF' > generate.js
+          const puppeteer = require('puppeteer');
+          const path = require('path');
+
+          (async () => {
+            // Launch headless browser
+            const browser = await puppeteer.launch({ headless: "new" });
+            const page = await browser.newPage();
+            
+            // Get the local absolute path of the HTML file
+            const filePath = `file://${path.join(__dirname, 'index.html')}`;
+            console.log('Opening page:', filePath);
+            
+            // Wait for network to be idle to ensure Tailwind CSS CDN is fully loaded
+            await page.goto(filePath, { waitUntil: 'networkidle0', timeout: 60000 });
+            
+            // Wait an extra 3 seconds to ensure all fonts and dynamic styles are rendered
+            console.log('Waiting for styles to render...');
+            await new Promise(r => setTimeout(r, 3000));
+            
+            // Export PDF (A4, Landscape, Print Background, No Margins)
+            console.log('Generating PDF...');
+            await page.pdf({
+              path: 'qianshu-proposal.pdf',
+              format: 'A4',
+              landscape: true,
+              printBackground: true,
+              margin: { top: 0, right: 0, bottom: 0, left: 0 }
+            });
+            
+            await browser.close();
+            console.log('PDF generated successfully!');
+          })();
+          EOF
+          node generate.js
+
+      - name: Upload PDF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Proposal-PDF
+          path: qianshu-proposal.pdf
