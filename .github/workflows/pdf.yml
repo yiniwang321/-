@@ -2,8 +2,8 @@ name: Generate PDF from HTML
 
 on:
   push:
-    branches: [ main, master ] # Trigger automatically when code is pushed to main branches
-  workflow_dispatch: # Allow manual trigger from the GitHub Actions UI
+    branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build_pdf:
@@ -27,33 +27,39 @@ jobs:
           const path = require('path');
 
           (async () => {
-            // Launch headless browser
-            const browser = await puppeteer.launch({ headless: "new" });
-            const page = await browser.newPage();
-            
-            // Get the local absolute path of the HTML file
-            const filePath = `file://${path.join(__dirname, 'index.html')}`;
-            console.log('Opening page:', filePath);
-            
-            // Wait for network to be idle to ensure Tailwind CSS CDN is fully loaded
-            await page.goto(filePath, { waitUntil: 'networkidle0', timeout: 60000 });
-            
-            // Wait an extra 3 seconds to ensure all fonts and dynamic styles are rendered
-            console.log('Waiting for styles to render...');
-            await new Promise(r => setTimeout(r, 3000));
-            
-            // Export PDF (A4, Landscape, Print Background, No Margins)
-            console.log('Generating PDF...');
-            await page.pdf({
-              path: 'qianshu-proposal.pdf',
-              format: 'A4',
-              landscape: true,
-              printBackground: true,
-              margin: { top: 0, right: 0, bottom: 0, left: 0 }
-            });
-            
-            await browser.close();
-            console.log('PDF generated successfully!');
+            try {
+              console.log('Starting browser...');
+              // 关键修复：添加了 CI 环境必须的 --no-sandbox 参数
+              const browser = await puppeteer.launch({ 
+                headless: "new",
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+              });
+              const page = await browser.newPage();
+              
+              const filePath = `file://${path.join(__dirname, 'index.html')}`;
+              console.log('Opening page:', filePath);
+              
+              await page.goto(filePath, { waitUntil: 'networkidle0', timeout: 60000 });
+              
+              console.log('Waiting for styles to render...');
+              await new Promise(r => setTimeout(r, 3000));
+              
+              console.log('Generating PDF...');
+              await page.pdf({
+                path: 'qianshu-proposal.pdf',
+                format: 'A4',
+                landscape: true,
+                printBackground: true,
+                margin: { top: 0, right: 0, bottom: 0, left: 0 }
+              });
+              
+              await browser.close();
+              console.log('PDF generated successfully!');
+            } catch (error) {
+              // 如果报错，打印出具体的错误原因
+              console.error('❌ Error generating PDF:', error);
+              process.exit(1);
+            }
           })();
           EOF
           node generate.js
@@ -62,4 +68,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Proposal-PDF
-          path: -.pdf
+          path: qianshu-proposal.pdf
